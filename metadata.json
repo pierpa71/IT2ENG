@@ -1,0 +1,6 @@
+{
+  "name": "DocuMorph AI - Traduttore Documenti PDF, Word & ASCII",
+  "description": "Applicazione per la traduzione in inglese di documenti PDF, Microsoft Word e ASCII mantenendo identica l'impaginazione, la struttura e lo stile.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

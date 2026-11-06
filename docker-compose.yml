@@ -1,0 +1,35 @@
+services:
+  # 1. Applicazione Web Principale (Node.js + React + Express)
+  documorph-web:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: documorph-web
+    ports:
+      - "3000:3000"
+    environment:
+      - PORT=3000
+      - NODE_ENV=production
+      # Se utilizzi anche Google Gemini come fallback cloud (opzionale):
+      - GEMINI_API_KEY=${GEMINI_API_KEY:-}
+    # Permette al container Docker di raggiungere Ollama o LM Studio in esecuzione sul sistema operativo host del PC
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    restart: unless-stopped
+
+  # 2. (Opzionale) Interfaccia Web Grafica Python Streamlit
+  documorph-python:
+    build:
+      context: .
+      dockerfile: Dockerfile.python
+    container_name: documorph-python
+    ports:
+      - "8501:8501"
+    environment:
+      - GEMINI_API_KEY=${GEMINI_API_KEY:-}
+      - LOCAL_LLM_URL=http://host.docker.internal:11434/v1
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    restart: unless-stopped
+    profiles:
+      - python
