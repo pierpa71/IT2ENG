@@ -68,7 +68,7 @@ WORKDIR /app
 COPY package*.json tsconfig.json vite.config.ts index.html ./
 COPY src ./src
 
-RUN npm install
+RUN npm install --legacy-peer-deps
 RUN npm run build
 
 FROM node:22-alpine AS runner
@@ -78,17 +78,15 @@ WORKDIR /app
 ENV NODE_ENV=production
 ENV PORT=3000
 
-COPY package*.json ./
-RUN npm install --omit=dev
-RUN npm install -g tsx
-
-COPY --from=builder /app/dist ./dist
-COPY server.ts tsconfig.json ./
+COPY package*.json tsconfig.json server.ts ./
 COPY python_app ./python_app
+
+COPY --from=builder /app/node_modules ./node_modules
+COPY --from=builder /app/dist ./dist
 
 EXPOSE 3000
 
-CMD ["tsx", "server.ts"]
+CMD ["npm", "start"]
 `;
 
   const DOCKERFILE_PYTHON = `# Dockerfile per l'applicazione Python Streamlit
